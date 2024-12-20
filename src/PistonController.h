@@ -101,7 +101,7 @@ private:
     volatile long _travelLength;
     
     // Jogging variables
-    bool _isJogging;
+    bool _isJogging = false;
 
     // Control variables
     float _kp = 1.0;

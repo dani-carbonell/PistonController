@@ -8,6 +8,7 @@ const int VALVE_PIN_1 = 25;    // ESP32 GPIO pin for valve direction 1
 const int VALVE_PIN_2 = 26;    // ESP32 GPIO pin for valve direction 2
 const int ENCODER_PIN_A = 32;  // ESP32 GPIO pin for encoder A
 const int ENCODER_PIN_B = 33;  // ESP32 GPIO pin for encoder B
+const int ENCODER_PIN_Z = 34;  // ESP32 GPIO pin for encoder Z (home)
 const int DMX_RX = 16;
 const int DMX_TX = 17;
 const int DMX_EN = 21;
@@ -25,7 +26,7 @@ const long POSITION_2 = 0;     // Retracted position
 const long HOME_TIMEOUT = 30000; // Home search timeout in milliseconds
 
 // Create controller instance
-PistonController piston(VALVE_PIN_1, VALVE_PIN_2, ENCODER_PIN_A, ENCODER_PIN_B, DMX_RX, DMX_TX, DMX_EN);
+PistonController piston(VALVE_PIN_1, VALVE_PIN_2, ENCODER_PIN_A, ENCODER_PIN_B, ENCODER_PIN_Z, DMX_RX, DMX_TX, DMX_EN);
 
 // System state
 enum SystemState {
@@ -39,6 +40,7 @@ enum SystemState {
 
 // Movement mode
 enum MovementMode {
+    MODE_DMX,
     MODE_MANUAL,
     MODE_AUTO
 } movementMode = MODE_MANUAL;
@@ -71,7 +73,7 @@ void setup() {
     printHelp();
 }
 
-voidloop() {
+void loop() {
     // Check for serial commands
     handleSerialCommands();
     
@@ -128,7 +130,7 @@ void handleHomingState() {
     
     if (!homingStarted) {
         homingStarted = true;
-        if (piston.findHome(1, HOME_TIMEOUT)) {
+        if (piston.findHome(HOME_TIMEOUT)) {
             Serial.println("Homing successful!");
             currentState = STATE_IDLE;
         } else {
@@ -228,7 +230,7 @@ void handleSerialCommands() {
 
 void handleSwitchState() {
     piston.checkDmxSignal();
-    piston.simpleSwitch();
+    piston.dmxSwitch();
 }
 
 void printStatus() {

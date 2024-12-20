@@ -48,9 +48,8 @@ void PistonController::begin() {
     dmx_config_t config = DMX_CONFIG_DEFAULT;
     dmx_personality_t personalities[] = {
         {2, "2 channel switch"},
-        {1, "linear movement"}
     };
-    int personality_count = 2;
+    int personality_count = 1;
     dmx_driver_install(_dmxPort, &config, personalities, personality_count);
 
     dmx_set_pin(_dmxPort, _dmxPinTx, _dmxPinRx, _dmxPinEn);
@@ -74,7 +73,7 @@ void PistonController::checkDmxSignal() {
 
         if (!packet.err) {
             dmx_read(1, _data, packet.size);
-        }
+        } 
     }
 }
 
@@ -124,6 +123,7 @@ bool PistonController::findHome(unsigned long timeout) {
 
     _travelLength = _homeExtend - _homeRetract;
     debugPrint("Travel length is ", _travelLength);
+    return true;
 }
 
 void PistonController::updateEncoder() {
@@ -150,9 +150,9 @@ long PistonController::getCurrentPosition() const {
 }
 
 void PistonController::update() {
-    if (_isJogging) {
-        return; // Skip PID control during jogging
-    }
+    // if (_isJogging) {
+    //     return; // Skip PID control during jogging
+    // }
 
     float error = _targetPosition - _currentPosition;
     float output = calculatePID(error);
