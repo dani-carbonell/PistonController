@@ -1,0 +1,7 @@
+DMX Layout
+
+Channel 1:   Extend  (>127)
+Channel 2:   Retract (>127)
+Channel 3/4: Position (Extended to Retracted, 16bit)
+Channel 5:   Control  (63 -> Enable Positional control)
+                      (128 for 3 sec -> Homing)
